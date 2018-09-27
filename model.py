@@ -52,6 +52,7 @@ class Critic(nn.Module):
             seed (int): Random seed
             fcs1_units (int): Number of nodes in the first hidden layer
             fc2_units (int): Number of nodes in the second hidden layer
+            fc3_units (int): Number of nodes in the third hidden layer
         """
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
@@ -71,6 +72,6 @@ class Critic(nn.Module):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
         xs = F.leaky_relu(self.fcs1(state))
         x = torch.cat((xs, action), dim=1)
-        x = F.leaky_relu(self.fc2(x))
-        x = F.leaky_relu(self.fc3(x))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
         return self.fc4(x)
