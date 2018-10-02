@@ -9,12 +9,12 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 
-BUFFER_SIZE = int(1e5)  # replay buffer size
-BATCH_SIZE = 64         # minibatch size
+BUFFER_SIZE = int(1e7)  # replay buffer size
+BATCH_SIZE = 128        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
-LR_ACTOR = 1e-4         # learning rate of the actor
-LR_CRITIC = 1e-3        # learning rate of the critic
+LR_ACTOR = 2e-4         # learning rate of the actor
+LR_CRITIC = 2e-4        # learning rate of the critic
 WEIGHT_DECAY = 0        # L2 weight decay
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -61,7 +61,7 @@ class Agent():
     def learnfromreplaymemory(self):
         # Learn, if enough samples are available in memory
         if len(self.memory) > BATCH_SIZE:
-            for _ in range(self.num_agents):
+            for _ in range(10):
                 experiences = self.memory.sample()
                 self.learn(experiences, GAMMA)
 
@@ -115,7 +115,7 @@ class Agent():
         actor_loss = -self.critic_local(states, actions_pred).mean()
         # Minimize the loss
         self.actor_optimizer.zero_grad()
-        torch.nn.utils.clip_grad_norm_(self.actor_local.parameters(), 1)
+        #torch.nn.utils.clip_grad_norm_(self.actor_local.parameters(), 1)
         actor_loss.backward()
         self.actor_optimizer.step()
 
