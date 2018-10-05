@@ -115,7 +115,6 @@ class Agent():
         actor_loss = -self.critic_local(states, actions_pred).mean()
         # Minimize the loss
         self.actor_optimizer.zero_grad()
-        #torch.nn.utils.clip_grad_norm_(self.actor_local.parameters(), 1)
         actor_loss.backward()
         self.actor_optimizer.step()
 
