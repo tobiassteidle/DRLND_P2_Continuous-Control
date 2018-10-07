@@ -1,6 +1,60 @@
-https://classroom.udacity.com/nanodegrees/nd893/parts/286e7d2c-e00c-4146-a5f2-a490e0f23eda/modules/089d6d51-cae8-4d4b-84c6-9bbe58b8b869/lessons/5b822b1d-5c89-4fd5-9b52-a02ddcfd3385/concepts/59c1f0b0-589a-43a5-ae27-fcb7f5a25e08
+## Learning Algorithm
+
+My learning algorithm is a Deep Deterministic Policy Gradient.  
+I used two neural networks, the actor network and the critic network.  
+
+The Actor network contains two hidden layers of 128 devices with ReLU activation applied to both layers and a tanh on the end.  
+In addition, a batch normalization is applied to the input and between the hidden layers.  
+
+The Critical network also has two hidden layers with 128 units and ReLU Activation on both layers.
 
 
-If you are interested in implementing a method that will be more stable with the project, please explore this paper. As discussed in the paper, Trust Region Policy Optimization (TRPO) and Truncated Natural Policy Gradient (TNPG) should achieve better performance. You may also like to write your own implementation of Proximal Policy Optimization (PPO), which has also demonstrated good performance with continuous control tasks.
+More information in the [DDPG](https://arxiv.org/pdf/1509.02971.pdf) paper.   
 
-You may also like to explore the (very!) recent Distributed Distributional Deterministic Policy Gradients (D4PG) algorithm as another method for adapting DDPG for continuous control.
+### Hyperparameters
+Parameter | Value
+--- | ---
+replay buffer size | int(1e6)
+minibatch size | 256
+discount factor | 0.99  
+tau (soft update) | 1e-3
+learning rate actor | 1e-3
+learning rate critic | 1e-3
+L2 weight decay | 0
+epsilon | 1.0
+epsilon decay | 1e-6
+
+### Plot of Rewards
+
+Episodes | Average Score | Max | Min | Time
+--- | --- | --- | --- | ---
+... | ... | ... | ... | ...
+Episode 181 | Average Score: 33.59 | Max: 39.64 | Min: 30.34 | Time: 23.88
+Episode 182 | Average Score: 33.76 | Max: 39.45 | Min: 30.88 | Time: 23.98
+Episode 183 | Average Score: 33.92 | Max: 38.23 | Min: 20.35 | Time: 23.96
+Episode 184 | Average Score: 34.08 | Max: 38.29 | Min: 27.17 | Time: 23.83
+Episode 185 | Average Score: 34.24 | Max: 39.54 | Min: 30.72 | Time: 23.93
+Episode 186 | Average Score: 34.40 | Max: 39.38 | Min: 34.30 | Time: 23.97
+Episode 187 | Average Score: 34.55 | Max: 39.53 | Min: 34.66 | Time: 23.94
+Episode 188 | Average Score: 34.69 | Max: 39.40 | Min: 31.07 | Time: 24.11
+Episode 189 | Average Score: 34.85 | Max: 39.59 | Min: 33.47 | Time: 24.00
+Episode 190 | Average Score: 35.00 | Max: 39.47 | Min: 30.89 | Time: 24.00
+Episode 190	| Average Score: 35.00 | | |  
+
+Environment solved in 190 episodes!	Average Score: 35.00
+
+![Solution](report/Scores.png)
+
+
+
+
+## Ideas for Future Work
+
+- Change network sizes and choose different hyperparameters
+- Trying other algorithms like PPO, A3C or D4PG
+  
+
+
+
+
+
