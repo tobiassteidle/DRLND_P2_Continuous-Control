@@ -10,12 +10,14 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 BUFFER_SIZE = int(1e6)  # replay buffer size
-BATCH_SIZE = 64         # minibatch size
+BATCH_SIZE = 256        # minibatch size
 GAMMA = 0.99            # discount factor
 TAU = 1e-3              # for soft update of target parameters
 LR_ACTOR = 1e-3         # learning rate of the actor
 LR_CRITIC = 1e-3        # learning rate of the critic
 WEIGHT_DECAY = 0        # L2 weight decay
+EPSILON = 1.0
+EPSILON_DECAY = 1e-6
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -34,6 +36,7 @@ class Agent():
         self.state_size = state_size
         self.action_size = action_size
         self.seed = random.seed(random_seed)
+        self.epsilon = EPSILON
 
         # Actor Network (w/ Target Network)
         self.actor_local = Actor(state_size, action_size, random_seed).to(device)
@@ -50,6 +53,10 @@ class Agent():
 
         # Replay memory
         self.memory = ReplayBuffer(action_size, BUFFER_SIZE, BATCH_SIZE, random_seed)
+
+        # Make sure target is with the same weight as the source
+        self.hard_update(self.actor_target, self.actor_local)
+        self.hard_update(self.critic_target, self.critic_local)
 
     def step(self, states, actions, rewards, next_states, dones, timestep):
         """Save experience in replay memory, and use random sample from buffer to learn."""
@@ -74,7 +81,7 @@ class Agent():
         self.actor_local.train()
 
         if add_noise:
-            action += self.noise.sample()
+            action += self.epsilon * self.noise.sample()
 
         return action
 
@@ -127,6 +134,10 @@ class Agent():
         self.soft_update(self.critic_local, self.critic_target, TAU)
         self.soft_update(self.actor_local, self.actor_target, TAU)
 
+        # ---------------------------- update noise ---------------------------- #
+        self.epsilon -= EPSILON_DECAY
+        self.noise.reset()
+
     def soft_update(self, local_model, target_model, tau):
         """Soft update model parameters.
         ?_target = t*?_local + (1 - t)*?_target
@@ -139,6 +150,10 @@ class Agent():
         """
         for target_param, local_param in zip(target_model.parameters(), local_model.parameters()):
             target_param.data.copy_(tau*local_param.data + (1.0-tau)*target_param.data)
+
+    def hard_update(self, target, source):
+        for target_param, param in zip(target.parameters(), source.parameters()):
+            target_param.data.copy_(param.data)
 
 class OUNoise:
     """Ornstein-Uhlenbeck process."""
